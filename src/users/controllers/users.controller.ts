@@ -2,22 +2,26 @@ import {
   Controller,
   Get,
   Post,
-  Patch,
+  Put,
   Delete,
   Body,
-  //   HttpCode,
   HttpStatus,
   HttpException,
   Param,
-  //   Query,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dto/createUser.dto';
-import { UsersService } from './users.service';
+import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
+import { UsersService } from '../services/users.service';
 import { isValidObjectId } from 'mongoose';
+import { GithubService } from '../services/github.service';
+import { GitlabService } from '../services/gitlab.service';
 
-@Controller('users')
+@Controller('user')
 export class UsersController {
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private githubService: GithubService,
+    private gitlabService: GitlabService,
+  ) {}
 
   @Get()
   async findAll() {
@@ -35,13 +39,47 @@ export class UsersController {
       : this.sendException(HttpStatus.NOT_FOUND, 'Document not found');
   }
 
+  @Get(':id/github')
+  async getGithubUser(@Param('id') id: string) {
+    this.validateParamId(id);
+
+    const userFound = await this.userService.findOneById(id);
+    if (!userFound)
+      this.sendException(HttpStatus.NOT_FOUND, 'Document not found');
+
+    const githubUser = await this.githubService.findOneById(
+      userFound.githubUserId,
+    );
+
+    return githubUser
+      ? githubUser
+      : this.sendException(HttpStatus.NOT_FOUND, 'Document not found');
+  }
+
+  @Get(':id/gitlab')
+  async getGitlabUser(@Param('id') id: string) {
+    this.validateParamId(id);
+
+    const userFound = await this.userService.findOneById(id);
+    if (!userFound)
+      this.sendException(HttpStatus.NOT_FOUND, 'Document not found');
+
+    const gitlabUser = await this.gitlabService.findOneById(
+      userFound.gitlabUserId,
+    );
+
+    return gitlabUser
+      ? gitlabUser
+      : this.sendException(HttpStatus.NOT_FOUND, 'Document not found');
+  }
+
   @Post()
   async addOne(@Body() createUserDto: CreateUserDto) {
     const createdUser = await this.userService.create(createUserDto);
     return createdUser;
   }
 
-  @Patch(':id')
+  @Put(':id')
   async updateOne(@Param('id') id: string, @Body() payload: UpdateUserDto) {
     this.validateParamId(id);
 
