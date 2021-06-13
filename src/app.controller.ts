@@ -1,3 +1,4 @@
+import { Param } from '@nestjs/common';
 import {
   Controller,
   Get,
@@ -10,12 +11,16 @@ import { AppService } from './app.service';
 import { JwtAuthGuard } from './auth/guards/jwt.guard';
 import { LocalAuthGuard } from './auth/guards/local.guard';
 import { AuthService } from './auth/services/auth.service';
+import { MailingService } from './mailing/services/mailing.service';
+import { UsersService } from './users/services/users.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly authService: AuthService,
+    private readonly mailingService: MailingService,
+    private readonly userService: UsersService,
   ) {}
 
   @Get()
@@ -41,5 +46,13 @@ export class AppController {
   @Get('test')
   async test(@Request() req: any) {
     return req.user;
+  }
+
+  @Get('notification/:id')
+  async sendNotification(@Param('id') id: string) {
+    const user = await this.userService.findOneById(id);
+    await this.mailingService.sendUserConfirmation(user);
+
+    return 'Sent notification';
   }
 }

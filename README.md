@@ -125,6 +125,9 @@ Actualmente está implementada la persistencia de datos mediante MongoDB y Mongo
 Para la integración con PostgreSQL sería necesario cambiar los services basados en Mongoose Schemas por clases TypeORM y las definiciones de tablas y claves pertinentes.
 
 Esta última integración aún no está desarrollada.
+
+## Vulnerabilidades
+Nodemailer depende de módulos con versiones vulnerables.
 ## Test
 
 ```bash
