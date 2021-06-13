@@ -1,18 +1,27 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
 // import fastifyCsrf from 'fastify-csrf';
 import { ValidationPipe } from '@nestjs/common';
+import * as session from 'express-session';
+import * as cookieParser from 'cookie-parser';
+import * as passport from 'passport';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter({ logger: true }),
+  const app = await NestFactory.create(AppModule);
+
+  app.use(cookieParser());
+  app.use(
+    session({
+      name: 'MyCookie',
+      secret: 'keyboard cat',
+      resave: true,
+      saveUninitialized: true,
+    }),
   );
-  // app.register(fastifyCsrf);
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

@@ -76,14 +76,19 @@ export class UsersController {
   @Post()
   async addOne(@Body() createUserDto: CreateUserDto) {
     const createdUser = await this.userService.create(createUserDto);
-    return createdUser;
+    return createdUser
+      ? createdUser
+      : this.sendException(HttpStatus.BAD_REQUEST, 'Sent invalid data.');
   }
 
   @Put(':id')
   async updateOne(@Param('id') id: string, @Body() payload: UpdateUserDto) {
     this.validateParamId(id);
 
-    return this.userService.update(id, payload);
+    const userUpdated = await this.userService.update(id, payload);
+    return userUpdated
+      ? userUpdated
+      : this.sendException(HttpStatus.BAD_REQUEST, 'Invalid Data');
   }
 
   @Delete(':id')
