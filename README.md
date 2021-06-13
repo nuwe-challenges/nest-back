@@ -9,6 +9,23 @@
 
 # Nest API
 
+## Tabla de contenido
+
+- [Acerca del proyecto](#acerca-del-proyecto)
+- [Glosario de tecnologias](#glosario-de-tecnologias)
+- [Instalación](#instalación)
+- [Distribución de directorios](#distribución-de-directorios)
+- [Lógica de peticiones](#lógica-de-peticiones)
+- [Iniciando la API](#iniciando-la-api)
+- [MailboxLayer API](#mailboxlayer-api)
+- [RESTCountries API](#restcountries-api)
+- [Mail Notifications](#mail-notifications)
+- [RESTCountries API](#restcountries-api)
+- [Autentificación](#autentificación)
+- [Modelos y bases de datos](#modelos-y-bases-de-datos)
+- [Vulnerabilidades](#vulnerabilidades)
+- [Test](#test)
+
 ## Acerca del proyecto
 
 Este proyecto es una API REST creada mediante NestJS, un framework basado en Express, que también puede ser iniciado como un servidor Fastify.
@@ -30,7 +47,7 @@ Como resultado se ha usado un servidor ExpressJS como base.
 - [Supertest](https://github.com/visionmedia/supertest)
 - [Mongo](https://www.mongodb.com/es)
 
-## Installation
+## Instalación
 
 ```bash
 $ npm install
@@ -115,11 +132,16 @@ El service asociado tiene un hook que comprueba la existencia de registros previ
 
 Si no existen, se llama a la API y se introducen los datos en la base de datos asociada.
 
+## Mail Notifications
+
+Esta función depende de las variables de entorno y, en caso de usar el SMTP de GMail, hay que configurar el cliente de remitente para que acepte dichas llamadas. Esta funcionalidad está en **MailingModule**
+
 ## Autentificación
 
 La gestión de permiso de acceso a rutas se realiza por medio de Passport, actualmente se han implementado dos Strategies: Local y Jwt (con protocolo Bearer). Toda la configuración de Passport está en el módulo **AuthModule**.
 
 ## Modelos y bases de datos
+
 Actualmente está implementada la persistencia de datos mediante MongoDB y Mongoose.
 
 Para la integración con PostgreSQL sería necesario cambiar los services basados en Mongoose Schemas por clases TypeORM y las definiciones de tablas y claves pertinentes.
@@ -127,7 +149,11 @@ Para la integración con PostgreSQL sería necesario cambiar los services basado
 Esta última integración aún no está desarrollada.
 
 ## Vulnerabilidades
+
 Nodemailer depende de módulos con versiones vulnerables.
+
+Algunos servicios de despligue en linea aún no soportan NestJS por lo que la variedad de escoger disminuye.
+
 ## Test
 
 ```bash
