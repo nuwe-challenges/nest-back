@@ -15,7 +15,7 @@ export class SerializerService extends PassportSerializer {
   async deserializeUser(userId: any, done: CallableFunction) {
     console.log(userId);
 
-    return await this.userService
+    return this.userService
       .findOneById(userId)
       .then((user) => done(null, user))
       .catch((error) => done(error));
